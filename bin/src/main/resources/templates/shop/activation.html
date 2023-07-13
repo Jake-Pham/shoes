@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+<meta charset="UTF-8">
+<title>Verification</title>
+<th:block id="css-resources">
+	<style>
+div.a {
+	text-align: center;
+}
+</style>
+</th:block>
+</head>
+<body>
+	<main id="main-content">
+		<div class="container my-5">
+			<div class="row justify-content-center">
+				<div class="col col-md-8">
+					<div class="alert alert-light">
+						<div class="a">
+							<h3><p th:if="${message}" th:text="${message}">MESSAGE</p></h3>
+							<a href="/" class="btn btn-info">Về Trang Chủ</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</main>
+	<th:block id="js-resources">
+
+	</th:block>
+</body>
+</html>

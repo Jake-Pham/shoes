@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+<meta charset="UTF-8">
+<title>Thanh toán</title>
+<th:block id="css-resources">
+	<link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+	<style>
+label {
+	display: flex;
+	align-items: center;
+	margin: 15px 20px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+input[type="radio"] {
+	opacity: 0;
+}
+
+.design {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	outline-offset: 3px;
+	outline: 3px solid #888888;
+	margin-right: 20px;
+}
+
+input[type="radio"]:checked ~.design {
+	outline-color: #0000FF;
+	background: #0000FF;
+}
+
+input[type="radio"]:checked ~.value {
+	color: #0000FF;
+}
+</style>
+</th:block>
+</head>
+<body>
+	<main class="main" id="main-content">
+		<nav aria-label="breadcrumb" class="breadcrumb-nav">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/"><i
+							class="icon-home"></i></a></li>
+					<li class="breadcrumb-item active" aria-current="page">Thanh
+						toán</li>
+				</ol>
+			</div>
+			<!-- End .container -->
+		</nav>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="order-summary">
+						<h3>Đơn hàng</h3>
+						<div class="collapse show" id="order-cart-section">
+							<table class="table table-mini-cart">
+								<tbody>
+									<tr>
+										<td class="product-col">
+											<figure class="product-image-container">
+												<!--                                        <a href="product.html" class="product-image">-->
+												<img th:src="@{${product.productImages[0]}}"
+													th:alt="${product.name}">
+												<!--                                        </a>-->
+											</figure>
+											<div>
+												<h2 class="product-title">
+													<span th:text="${product.name}"></span>
+												</h2>
+
+											</div>
+										</td>
+										<td class="price-col"
+											th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') +' đ'}"></td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- Pricing Section-->
+							<div class="pricing childs">
+								<h6 class="not-found-size"
+									style="margin-top: 5px; color: #dc3545;"
+									th:styleappend="${notFoundSize} == true ? '' : 'display:none'">Size
+									giày này đã hết. Vui lòng chọn size khác.</h6>
+								<div class="size-btn" data-toggle="modal"
+									data-target="#modal-size-Choose">
+									<button class="btn btn-primary size trans-btn">
+										<span class="size-text">Size</span><span
+											th:data-size="${size}" class="size-details">9US |
+											42.5VN | 26.2CM</span><i class="fas dropdown-arrow"></i>
+									</button>
+								</div>
+								<div class="input-group" style="margin-top: 30px">
+									<input type="text" class="form-control"
+										placeholder="Nhập mã khuyến mãi" id="in-coupon"
+										th:value="${product.couponCode}">
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary" type="button"
+											id="btn-apply-coupon">Áp dụng</button>
+									</div>
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Tạm tính</div>
+									<input class="form-control text-price-input" id="in-price"
+										type="text" th:value="${product.price}" readonly />
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Khuyến mãi</div>
+									<input class="form-control text-price-input"
+										id="in-promotion-value" type="text" readonly />
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Shipping</div>
+									<input class="form-control text-price-input"
+										id="in-shipping-value" type="text" readonly />
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Ngày nhận hàng dự kiến</div>
+									<input class="form-control text-price-input"
+										id="in-expecteddate-value" type="text" readonly />
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Tổng thanh toán</div>
+									<input class="form-control text-price-input"
+										id="in-total-price" type="text" readonly />
+								</div>
+								<div class="coupon price-include">
+									<div class="text">Phương thức thanh toán</div>
+									<label class="radio-inline"> <label> <input
+											type="radio" name="payment" value="cod" id="cod" checked>
+											<span class="design"></span> <span class="value">COD</span>
+									</label> <label> <input type="radio" name="payment"
+											value="vnpay" id="vnpay"> <span class="design"></span>
+											<span class="value">VNPAY</span>
+									</label>
+									</label>
+								</div>
+							</div>
+							<a
+								th:href="@{/{slug}/{id}(id=${product.id}, slug=${product.slug})}">
+								<button class="btn btn-secondary confirm-btn">Quay lại</button>
+							</a>
+							<button type="button" class="btn btn-primary confirm-btn red-btn"
+								id="btn-buy-now" th:style="${notFoundSize} ? 'display:none': ''">ĐẶT
+								HÀNG</button>
+						</div>
+						<!-- End #order-cart-section -->
+					</div>
+					<!-- End .order-summary -->
+				</div>
+				<!-- End .col-lg-4 -->
+
+				<div class="col-lg-6 order-lg-first">
+					<div class="checkout-payment">
+						<h2 class="step-title">Thông tin nhận hàng</h2>
+						<div id="new-checkout-address" class="show">
+							<form action="#">
+								<div class="form-group required-field">
+									<label>Tên người nhận </label> <input type="text"
+										class="form-control" th:value="${user_fullname}"
+										name="receiver_name" id="receiver_name" required>
+									<div class="invalid-feedback"></div>
+								</div>
+								<!-- End .form-group -->
+
+								<div class="form-group required-field">
+									<label>Số điện thoại </label> <input type="text"
+										class="form-control" th:value="${user_phone}"
+										name="receiver_phone" id="receiver_phone">
+									<div class="invalid-feedback"></div>
+								</div>
+								<!-- End .form-group -->
+
+								<div class="form-group required-field">
+									<label>Địa chỉ nhận hàng</label>
+									<div>
+										<div>Tỉnh/Thành&nbsp;&nbsp;
+										<select id="city">
+											<option value="${user_city}" selected>Chọn tỉnh thành</option>
+										</select>
+										</div>
+										<br>
+										<div>Quận/Huyện
+										 <select id="district">
+											<option value="${user_district}" selected>Chọn quận huyện</option>
+										</select>
+										</div>
+										<br>
+										<div>Phường/Xã&nbsp;&nbsp;&nbsp; <select id="ward">
+											<option value="${user_ward}" selected>Chọn phường xã</option>
+										</select>
+										</div>
+										<br>
+										<input class="form-control" th:value="${user_address}" name="receiver_address"
+											id="receiver_address" required />
+											<div class="invalid-feedback"></div>
+										<!-- <textarea type="text" class="form-control"
+											th:text="${user_address}" name="receiver_address"
+											id="receiver_address" required></textarea>
+										<div class="invalid-feedback"></div> -->
+									</div>
+								</div>
+								<!-- End .form-group -->
+
+								<div class="form-group">
+									<label>Ghi chú </label>
+									<textarea type="text" class="form-control" id="notes"></textarea>
+								</div>
+								<!-- End .form-group -->
+							</form>
+						</div>
+						<!-- End #new-checkout-address -->
+					</div>
+					<!-- End .checkout-payment -->
+				</div>
+				<!-- End .col-lg-8 -->
+			</div>
+			<!-- End .row -->
+		</div>
+		<!-- End .container -->
+
+		<div class="mb-6"></div>
+		<!-- margin -->
+		<!-- Modals-->
+		<th:block
+			th:replace="~{fragment/size_choose_modal :: size-choose-modal}"></th:block>
+			
+<script>
+    // Configs
+    let liveChatBaseUrl   = document.location.protocol + '//' + 'livechat.fpt.ai/v36/src'
+    let LiveChatSocketUrl = 'livechat.fpt.ai:443'
+    let FptAppCode        = '308eee0e8024fe8dcfa926a5feb796b7'
+    let FptAppName        = 'Live support'
+    // Define custom styles
+    let CustomStyles = {
+        // header
+        headerBackground: '#3C3737FF',
+        headerTextColor: '#ffffffff',
+        headerLogoEnable: true,
+        headerLogoLink: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo_head.svg',
+        headerText: 'Live support',
+        // main
+        primaryColor: '#000000FF',
+        secondaryColor: '#ecececff',
+        primaryTextColor: '#FFFFFFFF',
+        secondaryTextColor: '#000000DE',
+        buttonColor: '#b4b4b4B3',
+        buttonTextColor: '#ffffffff',
+        bodyBackgroundEnable: true,
+        bodyBackgroundLink: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/body.png',
+        avatarBot: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/bot.svg',
+        sendMessagePlaceholder: 'Enter your message here',
+        // float button
+        floatButtonLogo: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo.svg',
+        floatButtonTooltip: 'Tôi có thể giúp gì cho bạn',
+        floatButtonTooltipEnable: true,
+        // start screen
+        customerLogo: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo.svg',
+        customerWelcomeText: 'Vui lòng cho biết tên của bạn',
+        customerButtonText: 'Bắt đầu',
+        prefixEnable: false,
+        prefixType: 'radio',
+        prefixOptions: ["Anh","Chị"],
+        prefixPlaceholder: 'Danh xưng',
+        // custom css
+        css: ''
+    }
+    // Get bot code from url if FptAppCode is empty
+    if (!FptAppCode) {
+        let appCodeFromHash = window.location.hash.substr(1)
+        if (appCodeFromHash.length === 32) {
+            FptAppCode = appCodeFromHash
+        }
+    }
+    // Set Configs
+    let FptLiveChatConfigs = {
+        appName: FptAppName,
+        appCode: FptAppCode,
+        themes : '',
+        styles : CustomStyles
+    }
+    // Append Script
+    let FptLiveChatScript  = document.createElement('script')
+    FptLiveChatScript.id   = 'fpt_ai_livechat_script'
+    FptLiveChatScript.src  = liveChatBaseUrl + '/static/fptai-livechat.js'
+    document.body.appendChild(FptLiveChatScript)
+    // Append Stylesheet
+    let FptLiveChatStyles  = document.createElement('link')
+    FptLiveChatStyles.id   = 'fpt_ai_livechat_script'
+    FptLiveChatStyles.rel  = 'stylesheet'
+    FptLiveChatStyles.href = liveChatBaseUrl + '/static/fptai-livechat.css'
+    document.body.appendChild(FptLiveChatStyles)
+    // Init
+    FptLiveChatScript.onload = function () {
+        fpt_ai_render_chatbox(FptLiveChatConfigs, liveChatBaseUrl, LiveChatSocketUrl)
+    }
+</script>
+			
+	</main>
+	<!-- End .main -->
+
+	<th:block id="js-resources">
+		<script th:src="@{/shop/js/size-choose.js}"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+			referrerpolicy="no-referrer"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+		<script th:inline="javascript">	
+        let price = [[${product.price}]];		
+        let promotionValue = 0;
+        let totalPrice = price;
+		//GHN Address API
+		const url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+		const token = '9524d88b-1a71-11ee-8506-6ead57e9219a';
+		const shopid = '4314629';
+		let shipping = 0;
+		const headers = {
+		  'token': token,
+		  'Content-Type': 'application/json'
+		};
+		const headers_ShopId = {
+				  'token': token,
+				  'ShopId': shopid,
+				  'Content-Type': 'application/json'
+				};
+		var callAPI = (api) => {
+		    return axios.get(url, { headers })
+		        .then((response) => {
+		        	let row = ' <option disable value="">Chọn</option>';
+		        	response.data.data.forEach(element => {
+		                row += `<option data-id="${element.ProvinceID}" value="${element.ProvinceName}">${element.ProvinceName}</option>`
+		            });
+		            document.querySelector("#city").innerHTML = row
+		            return response.data.data[0].ProvinceID;
+		        });
+		}
+		var callApiDistrict = (url, requestBody) => {
+			  return axios.post(url, requestBody, { headers })
+			    .then((response) => {
+			      let row = '<option disabled value="">Chọn</option>';
+			      response.data.data.forEach(element => {
+			        row += `<option data-id="${element.DistrictID}" value="${element.DistrictName}">${element.DistrictName}</option>`;
+			      });
+			      document.querySelector("#district").innerHTML = row;
+			      return response.data.data[0].DistrictID;
+			    })
+			};
+		var callApiWard = (url, requestBody) => {
+			  return axios.post(url, requestBody, { headers })
+			    .then((response) => {
+			      let row = '<option disabled value="">Chọn</option>';
+			      response.data.data.forEach(element => {
+			        row += `<option data-id="${element.WardCode}" value="${element.WardName}">${element.WardName}</option>`;
+			      });
+			      document.querySelector("#ward").innerHTML = row;
+			    })
+			};
+			function formatNumber(number) {
+				  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+				}
+			var callShipping = (url, requestBody) => {
+			    return axios.get(url, { headers: headers_ShopId, params: requestBody })
+			        .then((response) => {
+			        	let tmp = response.data.data.total
+			        	$('#in-shipping-value').val(formatNumber(tmp));
+			    		shipping = response.data.data.total
+						totalPrice = totalPrice + parseFloat(shipping);
+			    		$('#in-total-price').val(formatNumber(totalPrice));
+			        });
+			}
+			var callExpecteddate = (url, requestBody) => {
+			    return axios.get(url, { headers: headers_ShopId, params: requestBody })
+			        .then((response) => {
+			        	const date = new Date(response.data.data.leadtime * 1000);
+			        	const year = date.getFullYear();
+			        	const month = date.getMonth() + 1; // Months are zero-based, so we add 1
+			        	const day = date.getDate();
+			        	// Format the date components as a date string
+			        	const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+			        	$('#in-expecteddate-value').val(formattedDate);
+			        });
+			}
+		const citySelectElement = document.querySelector("#city");
+		const districtSelectElement = document.querySelector("#district");
+		const wardSelectElement = document.querySelector("#ward");
+		
+		callAPI('https://online-gateway.ghn.vn/shiip/public-api/master-data/province')
+		  .then((provinceId) => {
+		    citySelectElement.addEventListener("change", () => {
+		      const selectedProvinceId = citySelectElement.options[citySelectElement.selectedIndex].dataset.id;
+		      const requestBody = {
+		        province_id: parseInt(selectedProvinceId)
+		      };
+		      callApiDistrict('https://online-gateway.ghn.vn/shiip/public-api/master-data/district', requestBody)
+		      .then((districtId) => {
+		    	  districtSelectElement.addEventListener("change", () => {
+		    	      const selectedDistrictId = districtSelectElement.options[districtSelectElement.selectedIndex].dataset.id;
+		    	      const requestBody = {
+		    	    		  district_id: parseInt(selectedDistrictId)
+		    	      };
+		    	      callApiWard('https://online-gateway.ghn.vn/shiip/public-api/master-data/ward', requestBody)
+		    	      .then((wardId) => {
+    	    	  wardSelectElement.addEventListener("change", () => {
+    	    	      const selectedWardId = wardSelectElement.options[wardSelectElement.selectedIndex].dataset.id;
+    	    	      const requestBody = {
+    	    	    		  service_id:53321,
+		    	    		  from_district_id:3695,
+		    	    		  to_district_id:parseInt(selectedDistrictId),
+		    	    		  to_ward_code:selectedWardId,
+		    	    		  height:12,
+		    	    		  length:34,
+		    	    		  weight:2500,
+		    	    		  width:25
+    	    	      };
+    	    	      const requestBody_Date = {
+    	    	    		  from_district_id: 3695,
+    	    	    		  from_ward_code: 90743,
+    	    	    		  to_district_id: parseInt(selectedDistrictId),
+    	    	    		  to_ward_code: selectedWardId,
+    	    	    		  service_id: 53321
+    	    	      };
+    	    	      callShipping('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee', requestBody)
+    	    	      callExpecteddate('https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/leadtime', requestBody_Date)
+				    });
+				  });
+		    	});
+		      });	
+		    });
+		  });
+		//
+        if ([[${product.couponCode}]] != null && [[${product.couponCode}]] != "") {
+            totalPrice = [[${product.promotionPrice}]];
+            promotionValue = price - totalPrice;
+        }
+        $('#in-total-price').val(totalPrice);
+        $('#in-promotion-value').val(promotionValue);
+
+        let couponCode = [[${product.couponCode}]];
+
+        let sizeVn = [[${sizeVn}]];
+
+        let sizeUs = [[${sizeUs}]];
+
+        let sizeCm = [[${sizeCm}]];
+
+        $(function () {
+            formatMoney();
+            render();
+            activeSize();
+            sizeGuideRender();
+        });
+
+        function render() {
+            for (let i = 0; i < sizeVn.length; i++) {
+                let sizeChoose = `
+            <div class="item"
+			data-size="${sizeUs[i]}US | ${sizeVn[i]}VN | ${sizeCm[i]}CM"
+			data-id="${sizeVn[i]}">${sizeVn[i]}</div>
+            `;
+
+                $('.size .select-filter').append(sizeChoose);
+            };
+        };
+
+        function sizeGuideRender() {
+            let tr = '';
+            for (let i = 0; i < sizeVn.length; i++) {
+                tr += `
+            <tr>
+			<td>${sizeVn[i]}</td>
+			<td>${sizeUs[i]}</td>
+			<td>${sizeCm[i]}</td>
+		</tr>
+            `;
+            }
+            $('.side-guide-table tbody').html(tr);
+        }
+
+        function activeSize() {
+            let availableSizes = [[${availableSizes}]]
+
+            for (let i = 0; i < sizeVn.length; i++) {
+                if (sizeVn[i] == [[${size}]]) {
+                    $('.size-details').text(sizeUs[i] + "US | " + sizeVn[i] + "VN | " + sizeCm[i] + "CM")
+                    break;
+                }
+            }
+
+            $('.size .item').addClass('cross')
+            if (![[${notFoundSize}]]) {
+                $(`.item[data-size='${$('.size-details').text()}']`).addClass('size-choose').removeClass('cross');
+            }
+
+            for (let i = 0; i < availableSizes.length; i++) {
+                $(`.item[data-id='${availableSizes[i]}']`).removeClass('cross');
+            }
+        }
+        $('#btn-apply-coupon').click(function() {
+            let coupon = $('#in-coupon').val();
+            if (coupon == "") {
+                $('#in-coupon').val(couponCode);
+                toastr.warning("Bạn chưa nhập mã khuyến mãi");
+                return;
+            }
+            $.ajax({
+                url: '/api/check-hidden-promotion?code='+coupon,
+                type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    couponCode = coupon;
+                    let tmp = data.discountValue;
+                    if (data.discountType == 1) {
+                        tmp = price * data.discountValue / 100;
+                    }
+                    if (tmp < data.maximumDiscountValue) {
+                        promotionValue = tmp;
+                    } else {
+                        promotionValue = data.maximumDiscountValue;
+                    }
+                    totalPrice = price - promotionValue;
+                    $('#in-price').val(price);
+                    $('#in-promotion-value').val(promotionValue);
+                    $('#in-total-price').val(totalPrice);
+                    formatMoney();
+                },
+                error: function(data) {
+                    $('#in-coupon').val(couponCode);
+                    toastr.warning(data.responseJSON.message);
+                },
+            });
+        })
+
+        $('#btn-buy-now').click(function() {
+            let receiverName = $('#receiver_name').val();
+            let receiverPhone = $('#receiver_phone').val();
+            let receiverAddress = $('#receiver_address').val();
+            let shipping = $('#in-shipping-value').val();
+            let notes = $('#notes').val();
+            let isValid = true;
+            let payment = 1;
+            if (receiverName.length == 0) {
+                fullNameInvalid = $('#receiver_name').next();
+                fullNameInvalid.css('display', 'block');
+                fullNameInvalid.html('Vui lòng nhập họ tên người nhận hàng');
+                isValid = false;
+            }
+            if (receiverPhone.length == 0) {
+                phoneInvalid = $('#receiver_phone').next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Vui lòng nhập số điện thoại người nhận hàng');
+                isValid = false;
+            }
+            let phoneFormat = new RegExp(/((09|03|07|08|05)+([0-9]{8})\b)/g);
+            if (!phoneFormat.test(receiverPhone)) {
+                phoneInvalid = $('#in-user-phone').next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Số điện thoại không hợp lệ');
+                isValid = false;
+            }
+            if (receiverAddress.length == 0) {
+                addressInvalid = $('#receiver_address').next();
+                addressInvalid.css('display', 'block');
+                addressInvalid.html('Vui lòng nhập địa chỉ nhận hàng');
+                isValid = false;
+            }
+            let size = $('.size-choose').data("id");
+            if (size == null || size == "") {
+                $('.not-found-size').show();
+                isValid = false;
+            }
+            if (isValid) {
+                if($("#cod").is(":checked")){
+                	req = {
+                            product_id: [[${product.id}]],
+                            size: size,
+                            receiver_name: receiverName,
+                            receiver_phone: receiverPhone,
+                            receiver_address: receiverAddress,
+                            coupon_code: couponCode,
+                            total_price: totalPrice,
+                            product_price: price,
+                            note:notes,
+                            payment:1,
+                			shipping:shipping
+                        }
+                    var myJSON = JSON.stringify(req);
+            		$.ajax({
+                        url: '/api/orders',
+                        type: 'POST',
+                        data: myJSON,
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            toastr.success("Đặt hàng thành công");
+                            setTimeout(function() {
+                                location.href = "/tai-khoan/lich-su-giao-dich/"+data;
+                            }, 1000)
+                        },
+                        error: function(data) {
+                            toastr.warning(data.responseJSON.message);
+                        },
+                    });
+                }else{
+                	req = {
+                            product_id: [[${product.id}]],
+                            size: size,
+                            receiver_name: receiverName,
+                            receiver_phone: receiverPhone,
+                            receiver_address: receiverAddress,
+                            coupon_code: couponCode,
+                            total_price: totalPrice,
+                            product_price: price,
+                            note:notes,
+                            payment:2,
+                            shipping:shipping
+                        }
+                    var myJSON = JSON.stringify(req);               	
+                	$.ajax({
+                        url: '/api/orders',
+                        type: 'POST',
+                        data: myJSON,
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            //toastr.success("Đặt hàng thành công");
+                        },
+                        error: function(data) {
+                            toastr.warning(data.responseJSON.message);
+                        },
+                    });                	
+    				 $.ajax({
+    	                    url: '/api/payment/create_payment?orderTotal='+totalPrice,
+    	                    type: 'GET',
+    	                    contentType: "application/json; charset=utf-8",
+    	                    success: function(data) {
+    	                        window.location.href = data.url;
+    	                    },
+    	                    error: function(data) {
+    	                        toastr.warning(data.responseJSON.message);
+    	                    },
+    	                });  				 
+                }
+            }
+        })
+        </script>
+	</th:block>
+</body>
+</html>

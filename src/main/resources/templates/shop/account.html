@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+<meta charset="UTF-8">
+<title>Thông tin tài khoản</title>
+<th:block id="css-resources">
+	<link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+</th:block>
+</head>
+<body>
+	<main id="main-content" class="container">
+		<div class="row">
+			<div class="col-lg-3">
+				<div class="left-sidebar">
+					<div class="header">
+						<div class="avatar">
+							<img class="img-fluid" th:src="@{/shop/images/avatar/avatar.png}"
+								alt="avatar" />
+						</div>
+						<div class="user-info">
+							<div class="user-name" th:text="${user_fullname}"></div>
+							<div class="edit-profile">Chỉnh sửa tài khoản</div>
+						</div>
+					</div>
+					<div class="break-line"></div>
+					<div class="nav-sidebar">
+						<a class="account nav-item" href="/tai-khoan">Quản lý tài
+							khoản</a> <a class="buying-order nav-item"
+							href="/tai-khoan/lich-su-giao-dich">Quản lý đơn hàng</a> <a
+							class="btn btn-primary red-btn sign-out-btn" href="/api/logout">Đăng
+							xuất</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-9 main-content-wrapper">
+				<div class="main-content">
+					<h1 class="account-title">Thông tin tài khoản</h1>
+					<div class="tab-content" id="pills-tabContent">
+						<div class="tab-pane fade show active" id="profile-setting"
+							role="tabpanel" aria-labelledby="profile-setting-tab">
+							<form class="setting-box">
+								<div class="full-name item-row col-md-10">
+									<div class="text required-label">Họ tên</div>
+									<div>
+										<input class="form-control" th:value="${user_fullname}"
+											id="in-user-fullname" />
+										<div class="invalid-feedback"></div>
+									</div>
+								</div>
+								<div class="email item-row col-md-10">
+									<div class="text required-label">Email</div>
+									<input class="form-control" disabled="disabled"
+										th:value="${user_email}" />
+								</div>
+								<div class="password item-row col-md-10">
+									<div class="text required-label">Mật khẩu</div>
+									<div class="password-wrapper">
+										<input class="form-control" type="password"
+											disabled="disabled" autocomplete="autocomplete"
+											value="******" /> <a class="change-password text-btn"
+											href="" data-toggle="modal" data-target="#changePassword">Đổi
+											mật khẩu</a>
+									</div>
+								</div>
+								<div class="phone item-row col-md-10">
+									<div class="text required-label">Số điện thoại</div>
+									<div>
+										<input class="form-control" th:value="${user_phone}"
+											id="in-user-phone" />
+										<div class="invalid-feedback"></div>
+									</div>
+								</div>
+								<div class="phone item-row col-md-10">
+									<div>Tỉnh/Thành</div><div>
+										<select id="city">
+											<option value="${user_city}" selected>Chọn tỉnh thành</option>
+										</select>
+										</div>
+										<div>
+										Quận/Huyện</div><div>
+										 <select id="district">
+											<option value="${user_district}" selected>Chọn quận huyện</option>
+										</select> 
+										</div>
+										<div>
+										Phường/Xã</div><div>
+										<select id="ward">
+											<option value="${user_ward}" selected>Chọn phường xã</option>
+										</select>
+										</div>
+									<div class="text">Địa chỉ</div>
+									<div>
+										 <input class="form-control" th:value="${user_address}"
+											id="in-user-address" />
+											<div class="invalid-feedback"></div>
+									</div>
+								</div>
+								<div class="update-btn-wrapper item-row col-md-10">
+									<div class="btn btn-primary red-btn update-btn">Cập nhật</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal change password -->
+		<div class="modal fade" id="changePassword" tabindex="-1"
+			role="dialog" aria-labelledby="changePasswordLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="changePasswordLabel">Đổi mật khẩu</h5>
+					</div>
+					<div class="modal-body">
+						<div class="current-password item-row">
+							<div class="text required-label">Mật khẩu cũ</div>
+							<div class="password-wrapper-in">
+								<input class="form-control" type="password"
+									autocomplete="autocomplete" id="old-password" />
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+						<div class="new-password item-row">
+							<div class="text required-label">Mật khẩu mới</div>
+							<div class="password-wrapper-in">
+								<input class="form-control" type="password"
+									autocomplete="autocomplete" id="new-password" />
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+						<div class="new-password-confirm item-row">
+							<div class="text required-label">Nhập lại mật khẩu mới</div>
+							<div class="password-wrapper-in">
+								<input class="form-control" type="password"
+									autocomplete="autocomplete" id="retype-password" />
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn" type="button" data-dismiss="modal">Huỷ
+							bỏ</button>
+						<button
+							class="btn btn-primary red-btn btn-confirm-change-password"
+							type="button">Lưu</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+<script>
+    // Configs
+    let liveChatBaseUrl   = document.location.protocol + '//' + 'livechat.fpt.ai/v36/src'
+    let LiveChatSocketUrl = 'livechat.fpt.ai:443'
+    let FptAppCode        = '308eee0e8024fe8dcfa926a5feb796b7'
+    let FptAppName        = 'Live support'
+    // Define custom styles
+    let CustomStyles = {
+        // header
+        headerBackground: '#3C3737FF',
+        headerTextColor: '#ffffffff',
+        headerLogoEnable: true,
+        headerLogoLink: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo_head.svg',
+        headerText: 'Live support',
+        // main
+        primaryColor: '#000000FF',
+        secondaryColor: '#ecececff',
+        primaryTextColor: '#FFFFFFFF',
+        secondaryTextColor: '#000000DE',
+        buttonColor: '#b4b4b4B3',
+        buttonTextColor: '#ffffffff',
+        bodyBackgroundEnable: true,
+        bodyBackgroundLink: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/body.png',
+        avatarBot: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/bot.svg',
+        sendMessagePlaceholder: 'Enter your message here',
+        // float button
+        floatButtonLogo: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo.svg',
+        floatButtonTooltip: 'Tôi có thể giúp gì cho bạn',
+        floatButtonTooltipEnable: true,
+        // start screen
+        customerLogo: 'https://chatbot-tools.fpt.ai/livechat-builder/img/theme/digital_agency/logo.svg',
+        customerWelcomeText: 'Vui lòng cho biết tên của bạn',
+        customerButtonText: 'Bắt đầu',
+        prefixEnable: false,
+        prefixType: 'radio',
+        prefixOptions: ["Anh","Chị"],
+        prefixPlaceholder: 'Danh xưng',
+        // custom css
+        css: ''
+    }
+    // Get bot code from url if FptAppCode is empty
+    if (!FptAppCode) {
+        let appCodeFromHash = window.location.hash.substr(1)
+        if (appCodeFromHash.length === 32) {
+            FptAppCode = appCodeFromHash
+        }
+    }
+    // Set Configs
+    let FptLiveChatConfigs = {
+        appName: FptAppName,
+        appCode: FptAppCode,
+        themes : '',
+        styles : CustomStyles
+    }
+    // Append Script
+    let FptLiveChatScript  = document.createElement('script')
+    FptLiveChatScript.id   = 'fpt_ai_livechat_script'
+    FptLiveChatScript.src  = liveChatBaseUrl + '/static/fptai-livechat.js'
+    document.body.appendChild(FptLiveChatScript)
+    // Append Stylesheet
+    let FptLiveChatStyles  = document.createElement('link')
+    FptLiveChatStyles.id   = 'fpt_ai_livechat_script'
+    FptLiveChatStyles.rel  = 'stylesheet'
+    FptLiveChatStyles.href = liveChatBaseUrl + '/static/fptai-livechat.css'
+    document.body.appendChild(FptLiveChatStyles)
+    // Init
+    FptLiveChatScript.onload = function () {
+        fpt_ai_render_chatbox(FptLiveChatConfigs, liveChatBaseUrl, LiveChatSocketUrl)
+    }
+</script>
+		
+	</main>
+
+	<th:block id="js-resources">
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script
+			src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBsPneABX0AikJU3g21R8wP-SKD4KC5uVQ"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+			referrerpolicy="no-referrer"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+		<script th:inline="javascript">
+		//Autocomplete Address
+		var searchInput = 'in-user-address';
+
+	$(document)
+			.ready(
+					function() {
+						var autocomplete;
+						autocomplete = new google.maps.places.Autocomplete(
+								document.getElementById(searchInput), {
+									types : [ 'geocode' ],
+									componentRestrictions : {
+										country : "vn"
+									}
+								});
+
+						google.maps.event
+								.addListener(
+										autocomplete,
+										'place_changed',
+										function() {
+											var near_place = autocomplete
+													.getPlace();
+											document.getElementById('loc_lat').value = near_place.geometry.location
+													.lat();
+											document.getElementById('loc_long').value = near_place.geometry.location
+													.lng();
+
+											document
+													.getElementById('latitude_view').innerHTML = near_place.geometry.location
+													.lat();
+											document
+													.getElementById('longitude_view').innerHTML = near_place.geometry.location
+													.lng();
+										});
+					});
+
+	//GHN Address API
+	const url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+	const token = '9524d88b-1a71-11ee-8506-6ead57e9219a';
+	const shopid = '4314629';
+	const headers = {
+	  'token': token,
+	  'Content-Type': 'application/json'
+	};
+	var callAPI = (api) => {
+	    return axios.get(url, { headers })
+	        .then((response) => {
+	        	let row = ' <option disable value="">Chọn</option>';
+	        	response.data.data.forEach(element => {
+	                row += `<option data-id="${element.ProvinceID}" value="${element.ProvinceName}">${element.ProvinceName}</option>`
+	            });
+	            document.querySelector("#city").innerHTML = row
+	            return response.data.data[0].ProvinceID;
+	        });
+	}
+	var callApiDistrict = (url, requestBody) => {
+		  return axios.post(url, requestBody, { headers })
+		    .then((response) => {
+		      let row = '<option disabled value="">Chọn</option>';
+		      response.data.data.forEach(element => {
+		        row += `<option data-id="${element.DistrictID}" value="${element.DistrictName}">${element.DistrictName}</option>`;
+		      });
+		      document.querySelector("#district").innerHTML = row;
+		      return response.data.data[0].DistrictID;
+		    })
+		};
+	var callApiWard = (url, requestBody) => {
+		  return axios.post(url, requestBody, { headers })
+		    .then((response) => {
+		      let row = '<option disabled value="">Chọn</option>';
+		      response.data.data.forEach(element => {
+		        row += `<option data-id="${element.WardCode}" value="${element.WardName}">${element.WardName}</option>`;
+		      });
+		      document.querySelector("#ward").innerHTML = row;
+		    })
+		};
+	const citySelectElement = document.querySelector("#city");
+	const districtSelectElement = document.querySelector("#district");
+	
+	callAPI('https://online-gateway.ghn.vn/shiip/public-api/master-data/province')
+	  .then((provinceId) => {
+	    citySelectElement.addEventListener("change", () => {
+	      const selectedProvinceId = citySelectElement.options[citySelectElement.selectedIndex].dataset.id;
+	      const requestBody = {
+	        province_id: parseInt(selectedProvinceId)
+	      };
+	      callApiDistrict('https://online-gateway.ghn.vn/shiip/public-api/master-data/district', requestBody)
+	      .then((districtId) => {
+	    	  districtSelectElement.addEventListener("change", () => {
+	    	      const selectedDistrictId = districtSelectElement.options[districtSelectElement.selectedIndex].dataset.id;
+	    	      const requestBody = {
+	    	    		  district_id: parseInt(selectedDistrictId)
+	    	      };
+	    	      callApiWard('https://online-gateway.ghn.vn/shiip/public-api/master-data/ward', requestBody)
+	    	});
+	      });	
+	    });
+	  });
+	//
+	$(document).on('change', '#' + searchInput, function() {
+		document.getElementById('latitude_input').value = '';
+		document.getElementById('longitude_input').value = '';
+
+		document.getElementById('latitude_view').innerHTML = '';
+		document.getElementById('longitude_view').innerHTML = '';
+	});
+        $('.btn-confirm-change-password').click(function() {
+            let oldPassword = $('#old-password').val();
+            let newPassword = $('#new-password').val();
+            let retypePassword = $('#retype-password').val();
+            let isValid = true;
+
+            if (oldPassword.length < 4 || oldPassword.length > 20) {
+                oldPasswordInvalid = $('#old-password').next();
+                oldPasswordInvalid.css('display', 'block');
+                oldPasswordInvalid.html('Độ dài mật khẩu cũ từ 4 - 20 ký tự');
+                isValid = false;
+            }
+
+            if (newPassword.length < 4 || newPassword.length > 20) {
+                newPasswordInvalid = $('#new-password').next();
+                newPasswordInvalid.css('display', 'block');
+                newPasswordInvalid.html('Độ dài mật khẩu mới từ 4 - 20 ký tự');
+                isValid = false;
+            }
+
+            if (retypePassword.length < 4 || newPassword.length > 20) {
+                retypePasswordInvalid = $('#retype-password').next();
+                retypePasswordInvalid.css('display', 'block');
+                retypePasswordInvalid.html('Độ dài xác thực mật khẩu từ 4 - 20 ký tự');
+                isValid = false;
+            } else if (newPassword !== retypePassword) {
+                retypePasswordInvalid = $('#retype-password').next();
+                retypePasswordInvalid.css('display', 'block');
+                retypePasswordInvalid.html('Mật khẩu mới và xác nhận mật khẩu không giống nhau');
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    old_password: oldPassword,
+                    new_password: newPassword
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/change-password',
+                    type: 'POST',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        toastr.success("Đổi mật khẩu thành công");
+                        clearInputChangePassword();
+                        $('.modal').modal('hide');
+                        formatMoney();
+                    },
+                    error: function(data) {
+                        toastr.warning(data.responseJSON.message);
+                    },
+                });
+            }
+        })
+
+        function clearInputChangePassword() {
+            $('#old-password').val('');
+            $('#old-password').next().hide();
+            $('#new-password').val('');
+            $('#new-password').next().hide();
+            $('#retype-password').val('');
+            $('#retype-password').next().hide();
+        }
+
+        $("#changePassword").on("hidden.bs.modal", function () {
+            clearInputChangePassword();
+        });
+
+        $('.update-btn').click(function() {
+            let phoneValue = $("#in-user-phone").val();
+            let fullNameValue = $("#in-user-fullname").val();
+            let cityValue = $("#city").val();
+            let districtValue = $("#district").val();
+            let wardValue = $("#ward").val();
+            let addressValue = $('#in-user-address').val();
+            let isValid = true;
+
+            let phoneFormat = new RegExp(/((09|03|07|08|05)+([0-9]{8})\b)/g);
+            if (phoneValue == "") {
+                phoneInvalid = $("#in-user-phone").next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Vui lòng nhập số điện thoại');
+                isValid = false;
+            } else if (!phoneFormat.test(phoneValue)) {
+                phoneInvalid = $("#in-user-phone").next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Số điện thoại không hợp lệ');
+                isValid = false;
+            }
+
+            if (fullNameValue == "") {
+                fullNameInvalid = $("#in-user-fullname").next();
+                fullNameInvalid.css('display', 'block');
+                fullNameInvalid.html('Vui lòng nhập họ tên');
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    phone: phoneValue,
+                    full_name: fullNameValue,
+                    address: addressValue,
+                    city : cityValue,
+                    district: districtValue,
+                    ward: wardValue
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/update-profile',
+                    type: 'PUT',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        signedValidate(true, fullNameValue);
+                        toastr.success("Cập nhật profile thành công");
+                    },
+                    error: function(data) {
+                        toastr.warning(data.responseJSON.message);
+                    },
+                    complete: function() {
+                        $("#in-user-fullname").next().hide();
+                        $("#in-user-phone").next().hide();
+                    }
+                });
+            }
+        })
+    </script>
+	</th:block>
+</body>
+</html>
